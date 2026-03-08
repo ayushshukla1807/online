@@ -42,7 +42,8 @@ enum class StrToState : std::uint8_t
 /// supporting std::string_view arguments.
 /// The number must be base-10 and can start with
 /// either '+' or '-', as well as optional whitespace.
-/// The result is coerced into the return type.
+/// Unlike strto*, the result is *not* coerced into the return type.
+/// A negative value for an unsigned type will return Overflow.
 /// This is typically called while parsing.
 /// @offset is the position at which to start parsing
 /// and will hold the position at which parsing terminated.
@@ -122,11 +123,6 @@ std::pair<T, StrToState> parseStrTo(const std::string_view str, std::size_t& ori
             CASE(2);
             CASE(1);
             case 0:
-                if (offset >= len)
-                {
-                    orig_offset = offset;
-                    return { static_cast<T>(neg ? -res : res), StrToState::Complete };
-                }
                 break;
 
             default:
@@ -167,8 +163,7 @@ std::pair<T, StrToState> parseStrTo(const std::string_view str, std::size_t& ori
                 while (offset < len && static_cast<std::uint_fast64_t>(s[offset] - '0') < 10)
                     offset++; // Eat all the digits.
                 orig_offset = offset;
-                return { static_cast<T>(neg ? std::numeric_limits<T>::min()
-                                            : std::numeric_limits<T>::max()),
+                return { neg ? std::numeric_limits<T>::min() : std::numeric_limits<T>::max(),
                          StrToState::Overflow };
             }
 
@@ -177,13 +172,21 @@ std::pair<T, StrToState> parseStrTo(const std::string_view str, std::size_t& ori
     }
 
     orig_offset = offset;
-    return { static_cast<T>(neg ? -res : res),
-             offset == len ? StrToState::Complete : StrToState::Partial };
+    if constexpr (!std::is_signed_v<T>)
+    {
+        if (neg)
+            return { std::numeric_limits<T>::max(), StrToState::Overflow };
+        return { res, offset == len ? StrToState::Complete : StrToState::Partial };
+    }
+
+    return { neg ? -res : res, offset == len ? StrToState::Complete : StrToState::Partial };
 }
 
 /// Convert from a string into an integer and default on failure.
 /// The number must be base-10 and can start with
 /// either '+' or '-', as well as optional whitespace.
+/// Unlike strto*, the result is *not* coerced into the return type.
+/// A negative value for an unsigned type will return the default.
 /// On failure to parse, overflow, or underflow, the default is returned.
 /// As a bonus, this is 2-4x faster than glibc across all lengths.
 template <typename T>
@@ -261,10 +264,6 @@ T strTo(const std::string_view str, T def)
             CASE(2);
             CASE(1);
             case 0:
-                if (offset >= len)
-                {
-                    return static_cast<T>(neg ? -res : res);
-                }
                 break;
 
             default:
@@ -309,7 +308,12 @@ T strTo(const std::string_view str, T def)
         } while (offset < len);
     }
 
-    return static_cast<T>(neg ? -res : res);
+    if constexpr (!std::is_signed_v<T>)
+    {
+        return neg ? def : res;
+    }
+
+    return neg ? -res : res;
 }
 
 /// Parse a string to 32-bit signed int.
