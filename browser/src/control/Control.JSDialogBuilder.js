@@ -2481,6 +2481,13 @@ window.L.Control.JSDialogBuilder = window.L.Control.extend({
 			}
 			break;
 
+		case 'rename':
+			if (control.getAttribute('modelId'))
+				control.setAttribute('modelId', data.name);
+			else
+				control.id = data.name;
+			break;
+
 		case 'rendered_entry':
 		case 'rendered_combobox_entry':
 		{
