@@ -77,6 +77,7 @@ all_la_unit_tests = \
 	unit-calc.la \
 	unit-wopi-temp.la \
 	unit-convert.la \
+	unit-mcp.la \
 	unit-copy-paste-writer.la \
 	unit-render-shape.la \
 	unit-http.la \
@@ -150,6 +151,7 @@ test_base_sources = \
 	HttpWhiteBoxTests.cpp \
 	KitQueueTests.cpp \
 	LoggingWhiteBoxTests.cpp \
+	McpHandlerTests.cpp \
 	NetUtilWhiteBoxTests.cpp \
 	NumUtilWhiteBoxTests.cpp \
 	RequestDetailsTests.cpp \
@@ -249,6 +251,8 @@ unit_copy_paste_writer_la_SOURCES = UnitCopyPasteWriter.cpp
 unit_copy_paste_writer_la_LIBADD = $(CPPUNIT_LIBS)
 unit_convert_la_SOURCES = UnitConvert.cpp
 unit_convert_csv_la_SOURCES = UnitConvertCSV.cpp
+unit_mcp_la_SOURCES = UnitMcp.cpp
+unit_mcp_la_LIBADD = $(CPPUNIT_LIBS)
 unit_convert_to_password_protected_la_SOURCES = UnitConvertToPasswordProtected.cpp
 unit_initial_load_fail_la_SOURCES = UnitInitialLoadFail.cpp
 unit_initial_load_fail_la_LIBADD = $(CPPUNIT_LIBS)
