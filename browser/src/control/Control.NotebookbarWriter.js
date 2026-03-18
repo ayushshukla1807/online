@@ -1641,13 +1641,6 @@ window.L.Control.NotebookbarWriter = window.L.Control.Notebookbar.extend({
 	getViewTab: function() {
 		var isTablet = window.mode.isTablet();
 		var content = [
-			isTablet ?
-				{
-					'id': 'closemobile',
-					'type': 'bigcustomtoolitem',
-					'text': _('Read mode'),
-					'command': 'closetablet',
-				} : {},
 			{
 				'id': 'view-control-codes',
 				'type': 'bigtoolitem',
@@ -1706,85 +1699,121 @@ window.L.Control.NotebookbarWriter = window.L.Control.Notebookbar.extend({
 						],
 						'vertical': 'true'
 					},
+					{
+						'id': 'fullscreen',
+						'type': 'bigtoolitem',
+						'text': _UNO('.uno:FullScreen'),
+						'command': '.uno:FullScreen',
+						'accessibility': { focusBack: true,	combination: 'FS', de: null }
+					},
 				]
 			},
 			{ type: 'separator', id: 'view-zoomin-break', orientation: 'vertical' },
 			{
-				'id': 'toggleuimode',
-				'class': 'unotoggleuimode',
-				'type': 'bigcustomtoolitem',
-				'text': _('Compact view'),
-				'accessibility': { focusBack: false, combination: 'UI', de: null }
-			},
-			{
-				'type': 'container',
-				'children': [
+				'type': 'overflowgroup',
+				'id': 'view-layout',
+				'name':_('User Interface'),
+				'accessibility': { focusBack: false, combination: 'IF', de: null },
+				'children' : [
 					{
-						'type': 'toolbox',
-						'children': [
-							{
-								'id': 'showruler',
-								'class': 'unoshowruler',
-								'type': 'checkbox',
-								'command': 'showruler',
-								'text': _('Ruler'),
-								'accessibility': { focusBack: true, combination: 'R', de: 'L' }
-							}
-						]
+						'id': 'toggleuimode',
+						'class': 'unotoggleuimode',
+						'type': 'bigcustomtoolitem',
+						'text': _('Compact view'),
+						'accessibility': { focusBack: false, combination: 'UI', de: null }
 					},
 					{
-						'type': 'toolbox',
-						'children': [
-							{
-								'id': 'showstatusbar',
-								'class': 'unoshowstatusbar',
-								'type': 'checkbox',
-								'command': 'showstatusbar',
-								'text': _('Status Bar'),
-								'accessibility': { focusBack: true, combination: 'AH', de: null }
-							}
-						]
-					}
-				],
-				'vertical': 'true'
-			},
-			{
-				'id': 'collapsenotebookbar',
-				'class': 'unocollapsenotebookbar',
-				'type': 'bigcustomtoolitem',
-				'text': _('Collapse Tabs'),
-				'accessibility': { focusBack: true, combination: 'CT', de: null }
-			},
-			{ type: 'separator', id: 'view-collapsenotebookbar-break', orientation: 'vertical' },
-			{
-				'id':'toggledarktheme',
-				'class': 'unotoggledarktheme',
-				'type': 'bigcustomtoolitem',
-				'text': _('Dark Mode'),
-				'accessibility': { focusBack: true, combination: 'D', de: null }
-			},
-			{
-			    'id':'invertbackground',
-			    'class': 'unoinvertbackground',
-			    'type': 'bigcustomtoolitem',
-			    'text': _('Invert Background'),
-			    'accessibility': { focusBack: true, combination: 'BG', de: null }
+						'id': 'collapsenotebookbar',
+						'class': 'unocollapsenotebookbar',
+						'type': 'bigcustomtoolitem',
+						'text': _('Collapse Tabs'),
+						'accessibility': { focusBack: true, combination: 'CT', de: null }
+					},
+					{
+						'id':'toggledarktheme',
+						'class': 'unotoggledarktheme',
+						'type': 'bigcustomtoolitem',
+						'text': _('Dark Mode'),
+						'accessibility': { focusBack: true, combination: 'D', de: null }
+					},
+					{
+						'id':'invertbackground',
+						'class': 'unoinvertbackground',
+						'type': 'bigcustomtoolitem',
+						'text': _('Invert Background'),
+						'accessibility': { focusBack: true, combination: 'BG', de: null }
+					},
+				]
 			},
 			{ type: 'separator', id: 'view-invertbackground-break', orientation: 'vertical' },
 			{
-				'id': 'view-sidebar-property-deck',
-				'type': 'bigtoolitem',
-				'text': _UNO('.uno:Sidebar'),
-				'command': '.uno:SidebarDeck.PropertyDeck',
-				'accessibility': { focusBack: true, combination: 'SB', de: null }
+				'type': 'overflowgroup',
+				'id': 'view-elements',
+				'name':_('Sidebar'),
+				'accessibility': { focusBack: false, combination: 'UE', de: null },
+				'children' : [
+					{
+						'id': 'view-navigator',
+						'type': 'bigtoolitem',
+						'text': _UNO('.uno:Navigator'),
+						'command': '.uno:Navigator',
+						'accessibility': { focusBack: true, combination: 'K', de: 'V' }
+					},
+					{
+						'type': 'container',
+						'children': [
+							{
+								'type': 'toolbox',
+								'children': [
+									{
+										'id': 'showruler',
+										'class': 'unoshowruler',
+										'type': 'checkbox',
+										'command': 'showruler',
+										'text': _('Ruler'),
+										'accessibility': { focusBack: true, combination: 'R', de: 'L' }
+									}
+								]
+							},
+							{
+								'type': 'toolbox',
+								'children': [
+									{
+										'id': 'showstatusbar',
+										'class': 'unoshowstatusbar',
+										'type': 'checkbox',
+										'command': 'showstatusbar',
+										'text': _('Status Bar'),
+										'accessibility': { focusBack: true, combination: 'AH', de: null }
+									}
+								]
+							}
+						],
+						'vertical': 'true'
+					},
+					{
+						'id': 'view-sidebar-property-deck',
+						'type': 'bigtoolitem',
+						'text': _UNO('.uno:Sidebar'),
+						'command': '.uno:SidebarDeck.PropertyDeck',
+						'accessibility': { focusBack: true, combination: 'SB', de: null }
+					},
+					{
+						'id': 'format-style-dialog',
+						'type': 'bigtoolitem',
+						'text': _('Style list'),
+						'command': '.uno:SidebarDeck.StyleListDeck',
+						'accessibility': { focusBack: false, combination: 'SD', de: null }
+					},
+				]
 			},
-			{
-				'id': 'view-navigator',
-				'type': 'bigtoolitem',
-				'text': _UNO('.uno:Navigator'),
-				'command': '.uno:Navigator',
-				'accessibility': { focusBack: true, combination: 'K', de: 'V' }
-			},
+			isTablet ?
+				{
+					'id': 'closemobile',
+					'type': 'bigcustomtoolitem',
+					'text': _('Read mode'),
+					'command': 'closetablet',
+				} : {},
 		];
 
 		return this.getTabPage(viewTabName, content);

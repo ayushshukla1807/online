@@ -546,106 +546,6 @@ window.L.Control.NotebookbarImpress = window.L.Control.NotebookbarWriter.extend(
 		var content = [
 			{
 				'type': 'overflowgroup',
-				'id': 'view-zoom',
-				'name':_('Zoom'),
-				'accessibility': { focusBack: true, combination: 'FS', de: null },
-				'children' : [
-					{
-						'id': 'fullscreen',
-						'type': 'bigtoolitem',
-						'text': _UNO('.uno:FullScreen'),
-						'command': '.uno:FullScreen',
-						'accessibility': { focusBack: true, combination: 'FS', de: null }
-					},
-					{
-						'id': 'zoomreset',
-						'class': 'unozoomreset',
-						'type': 'bigcustomtoolitem',
-						'text': _('Reset zoom'),
-						'accessibility': { focusBack: true, combination: 'ZR', de: null }
-					},
-					{
-						'type': 'container',
-						'children': [
-							{
-								'type': 'toolbox',
-								'children': [
-									{
-										'id': 'zoomout',
-										'class': 'unozoomout',
-										'type': 'customtoolitem',
-										'text': _UNO('.uno:ZoomMinus'),
-										'accessibility': { focusBack: true, combination: 'ZO', de: null }
-									}
-								]
-							},
-							{
-								'type': 'toolbox',
-								'children': [
-									{
-										'id': 'zoomin',
-										'class': 'unozoomin',
-										'type': 'customtoolitem',
-										'text': _UNO('.uno:ZoomPlus'),
-										'accessibility': { focusBack: true, combination: 'ZI', de: null }
-									}
-								]
-							}
-						],
-						'vertical': 'true'
-					},
-				]
-			},
-			{ type: 'separator', id: 'view-zoomin-break', orientation: 'vertical' },
-			{
-				'id': 'toggleuimode',
-				'class': 'unotoggleuimode',
-				'type': 'bigcustomtoolitem',
-				'text': _('Compact view'),
-				'accessibility': { focusBack: true, combination: 'TU', de: null }
-			},
-			{
-				'type': 'container',
-				'children': [
-					{
-						'type': 'toolbox',
-						'children': [
-							{
-								'id': 'showruler',
-								'class': 'unoshowruler',
-								'type': 'checkbox',
-								'command': 'showruler',
-								'text': _('Ruler'),
-								'accessibility': { focusBack: true, combination: 'R', de: 'L' }
-							}
-						]
-					},
-					{
-						'type': 'toolbox',
-						'children': [
-							{
-								'id': 'showstatusbar',
-								'class': 'unoshowstatusbar',
-								'type': 'checkbox',
-								'command': 'showstatusbar',
-								'text': _('Status Bar'),
-								'accessibility': { focusBack: true, combination: 'SB', de: null }
-							}
-						]
-					}
-				],
-				'vertical': 'true'
-			},
-			{
-				'id': 'collapsenotebookbar',
-				'class': 'unocollapsenotebookbar',
-				'type': 'bigcustomtoolitem',
-				'text': _('Collapse Tabs'),
-				'accessibility': { focusBack: true, combination: 'CT', de: null }
-			},
-			{ type: 'separator', id: 'view-collapsenotebookbar-break', orientation: 'vertical' },
-			{
-				'type': 'overflowgroup',
 				'id': 'view-slide-view',
 				'name':_('Slide Views'),
 				'accessibility': { focusBack: true, combination: 'NV', de: null },
@@ -696,27 +596,156 @@ window.L.Control.NotebookbarImpress = window.L.Control.NotebookbarWriter.extend(
 			},
 			{ type: 'separator', id: 'view-griduse-break', orientation: 'vertical' },
 			{
-				'id':'toggledarktheme',
-				'class': 'unotoggledarktheme',
-				'type': 'bigcustomtoolitem',
-				'text': _('Dark Mode'),
-				'accessibility': { focusBack: true, combination: 'TT', de: null }
+				'type': 'overflowgroup',
+				'id': 'view-zoom',
+				'name':_('Zoom'),
+				'accessibility': { focusBack: true, combination: 'FS', de: null },
+				'children' : [
+					{
+						'id': 'zoomreset',
+						'class': 'unozoomreset',
+						'type': 'bigcustomtoolitem',
+						'text': _('Reset zoom'),
+						'accessibility': { focusBack: true, combination: 'ZR', de: null }
+					},
+					{
+						'type': 'container',
+						'children': [
+							{
+								'type': 'toolbox',
+								'children': [
+									{
+										'id': 'zoomout',
+										'class': 'unozoomout',
+										'type': 'customtoolitem',
+										'text': _UNO('.uno:ZoomMinus'),
+										'accessibility': { focusBack: true, combination: 'ZO', de: null }
+									}
+								]
+							},
+							{
+								'type': 'toolbox',
+								'children': [
+									{
+										'id': 'zoomin',
+										'class': 'unozoomin',
+										'type': 'customtoolitem',
+										'text': _UNO('.uno:ZoomPlus'),
+										'accessibility': { focusBack: true, combination: 'ZI', de: null }
+									}
+								]
+							}
+						],
+						'vertical': 'true'
+					},
+					{
+						'id': 'fullscreen',
+						'type': 'bigtoolitem',
+						'text': _UNO('.uno:FullScreen'),
+						'command': '.uno:FullScreen',
+						'accessibility': { focusBack: true, combination: 'FS', de: null }
+					},
+				]
 			},
+			{ type: 'separator', id: 'view-zoomin-break', orientation: 'vertical' },
 			{
-				'id':'invertbackground',
-				'class': 'unoinvertbackground',
-				'type': 'bigcustomtoolitem',
-				'text': _('Invert Background'),
-				'accessibility': { focusBack: true, combination: 'BG', de: null }
+				'type': 'overflowgroup',
+				'id': 'view-layout',
+				'name':_('User Interface'),
+				'accessibility': { focusBack: false, combination: 'IF', de: null },
+				'children' : [
+					{
+						'id': 'toggleuimode',
+						'class': 'unotoggleuimode',
+						'type': 'bigcustomtoolitem',
+						'text': _('Compact view'),
+						'accessibility': { focusBack: false, combination: 'UI', de: null }
+					},
+					{
+						'id': 'collapsenotebookbar',
+						'class': 'unocollapsenotebookbar',
+						'type': 'bigcustomtoolitem',
+						'text': _('Collapse Tabs'),
+						'accessibility': { focusBack: true, combination: 'CT', de: null }
+					},
+					{
+						'id':'toggledarktheme',
+						'class': 'unotoggledarktheme',
+						'type': 'bigcustomtoolitem',
+						'text': _('Dark Mode'),
+						'accessibility': { focusBack: true, combination: 'D', de: null }
+					},
+					{
+						'id':'invertbackground',
+						'class': 'unoinvertbackground',
+						'type': 'bigcustomtoolitem',
+						'text': _('Invert Background'),
+						'accessibility': { focusBack: true, combination: 'BG', de: null }
+					},
+				]
 			},
 			{ type: 'separator', id: 'view-invertbackground-break', orientation: 'vertical' },
 			{
-				'id': 'view-side-bar',
-				'type': 'bigtoolitem',
-				'text': _UNO('.uno:Sidebar'),
-				'command': '.uno:SidebarDeck.PropertyDeck',
-				'accessibility': { focusBack: true, combination: 'SD', de: null }
-			}
+				'type': 'overflowgroup',
+				'id': 'view-elements',
+				'name':_('Sidebar'),
+				'accessibility': { focusBack: false, combination: 'UE', de: null },
+				'children' : [
+					{
+						'id': 'view-navigator',
+						'type': 'bigtoolitem',
+						'text': _UNO('.uno:Navigator'),
+						'command': '.uno:Navigator',
+						'accessibility': { focusBack: true, combination: 'K', de: 'V' }
+					},
+					{
+						'type': 'container',
+						'children': [
+							{
+								'type': 'toolbox',
+								'children': [
+									{
+										'id': 'showruler',
+										'class': 'unoshowruler',
+										'type': 'checkbox',
+										'command': 'showruler',
+										'text': _('Ruler'),
+										'accessibility': { focusBack: true, combination: 'R', de: 'L' }
+									}
+								]
+							},
+							{
+								'type': 'toolbox',
+								'children': [
+									{
+										'id': 'showstatusbar',
+										'class': 'unoshowstatusbar',
+										'type': 'checkbox',
+										'command': 'showstatusbar',
+										'text': _('Status Bar'),
+										'accessibility': { focusBack: true, combination: 'AH', de: null }
+									}
+								]
+							}
+						],
+						'vertical': 'true'
+					},
+					{
+						'id': 'view-sidebar-property-deck',
+						'type': 'bigtoolitem',
+						'text': _UNO('.uno:Sidebar'),
+						'command': '.uno:SidebarDeck.PropertyDeck',
+						'accessibility': { focusBack: true, combination: 'SB', de: null }
+					},
+					{
+						'id': 'format-customanimation',
+						'type': 'bigtoolitem',
+						'text': _('Animation'),
+						'command': '.uno:CustomAnimation',
+						'accessibility': { focusBack: false, combination: 'ZA', de: null }
+					},
+				]
+			},
 		];
 
 		return this.getTabPage('View', content);
