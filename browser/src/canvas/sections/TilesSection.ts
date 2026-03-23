@@ -890,6 +890,11 @@ export class TilesSection extends CanvasSectionObject {
 			corePxBounds.max.multiplyBy(convScale)
 		);
 	}
+
+	onNewDocumentTopLeft(): void {
+		if (app.map._textInput && (app.map._textInput as any)._isDebugOn)
+			(app.map._textInput as any).update();
+	}
 }
 
 }
