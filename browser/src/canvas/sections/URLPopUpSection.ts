@@ -21,7 +21,7 @@ class URLPopUpSection extends HTMLObjectSection {
 	arrowDiv: HTMLDivElement;
 
 	static arrowHalfWidth = 10;
-	static horizontalPadding = 6;
+	static horizontalPadding = 5;
 	static popupVerticalMargin = 20;
 
 	constructor(url: string, documentPosition: cool.SimplePoint, linkPosition?: cool.SimplePoint, linkIsClientSide = false) {
@@ -81,10 +81,12 @@ class URLPopUpSection extends HTMLObjectSection {
 		const parent = this.getHTMLObject();
 		window.L.DomUtil.createWithId('div', this.containerId, parent);
 
-        const link = window.L.DomUtil.createWithId('a', this.linkId, parent);
+		const linkRow = window.L.DomUtil.create('div', 'hyperlink-pop-up-link-row', parent);
+
+        const link = window.L.DomUtil.createWithId('a', this.linkId, linkRow);
 		link.innerText = url;
 		const copyLinkText = _('Copy link location');
-		const copyBtn = window.L.DomUtil.createWithId('div', this.copyButtonId, parent);
+		const copyBtn = window.L.DomUtil.createWithId('div', this.copyButtonId, linkRow);
 		window.L.DomUtil.addClass(copyBtn, 'hyperlink-popup-btn');
 		copyBtn.setAttribute('title', copyLinkText);
 		copyBtn.setAttribute('role', 'button');
@@ -98,7 +100,7 @@ class URLPopUpSection extends HTMLObjectSection {
 		imgCopyBtn.style.padding = '4px';
 
 		const editLinkText = _('Edit link');
-		const editBtn = window.L.DomUtil.createWithId('div', this.editButtonId, parent);
+		const editBtn = window.L.DomUtil.createWithId('div', this.editButtonId, linkRow);
 		window.L.DomUtil.addClass(editBtn, 'hyperlink-popup-btn');
 		editBtn.setAttribute('title', editLinkText);
 		editBtn.setAttribute('role', 'button');
@@ -113,7 +115,7 @@ class URLPopUpSection extends HTMLObjectSection {
 		imgEditBtn.style.padding = '4px';
 
 		const removeLinkText = _('Remove link');
-		const removeBtn = window.L.DomUtil.createWithId('div', this.removeButtonId, parent);
+		const removeBtn = window.L.DomUtil.createWithId('div', this.removeButtonId, linkRow);
 		window.L.DomUtil.addClass(removeBtn, 'hyperlink-popup-btn');
 		removeBtn.setAttribute('title', removeLinkText);
 		removeBtn.setAttribute('role', 'button');
