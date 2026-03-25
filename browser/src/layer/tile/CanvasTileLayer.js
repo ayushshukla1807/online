@@ -3185,7 +3185,10 @@ window.L.CanvasTileLayer = window.L.Layer.extend({
 			this._invalidateZoomFirstFit = true;
 	},
 
-	// This is really just called on zoomend
+	/* this is really just called on zoomend. `e` is always undefined since
+	 * we are no longer listening to 'resize' events. on resize, `_syncTileContainerSize`
+	 * is fired by the `ResizeObserver` on the '#document-container', which inturn calls
+	 * this function. */
 	_fitWidthZoom: function (e, maxZoom, recalcFirstFit=false) {
 		if (this.isCalc() || this.isDraw())
 			return;
@@ -3801,9 +3804,15 @@ window.L.CanvasTileLayer = window.L.Layer.extend({
 		map.on('error', this._mapOnError, this);
 		if (map.options.autoFitWidth !== false) {
 			// always true since autoFitWidth is never set
-			map.on('resize', this._fitWidthZoom, this);
+
+			/* always true also because _fitWidthZoom is called by 
+			 * `_syncTileContainerSize` which is called by a `ResizeObserver` on 
+			 * the `#document-container` element. therefore no need to listen
+			 * to resize events here, it just repeats the same work.
+			 */
+
+			/* map.on('resize', this._fitWidthZoom, this); */
 		}
-		this._map.on('resize', this._syncTileContainerSize, this);
 		// Retrieve the initial cell cursor position (as LOK only sends us an
 		// updated cell cursor when the selected cell is changed and not the initial
 		// cell).
