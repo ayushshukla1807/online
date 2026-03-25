@@ -1421,7 +1421,7 @@ class UIManager extends window.L.Control {
 	}
 
 	showNavigator(): void {
-		app.socket.sendMessage('uno .uno:Navigator');
+		this.map?.navigator?.requestShow();
 	}
 
 	/**
