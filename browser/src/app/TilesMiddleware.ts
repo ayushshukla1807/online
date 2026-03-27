@@ -223,10 +223,18 @@ class TileManager {
 			window.app.console.assert(!this.tileBitmapList.find((i) => i == tile));
 
 		// free the last tile if we need to
-		if (this.tileBitmapList.length > highNumBitmaps)
-			this.reclaimTileBitmapMemory(
-				this.tileBitmapList[this.tileBitmapList.length - 1],
-			);
+		if (this.tileBitmapList.length > highNumBitmaps) {
+			const evictTile = this.tileBitmapList[this.tileBitmapList.length - 1];
+			const wasVisible = evictTile.distanceFromView === 0;
+			this.reclaimTileBitmapMemory(evictTile);
+
+			if (wasVisible && evictTile.hasKeyframe()) {
+				this.dehydratedCurrentTiles.push(evictTile.coords.key());
+				app.sectionContainer.deferDrawing(
+					this.rehydrateCurrentTiles.bind(this),
+				);
+			}
+		}
 
 		// current tiles are first:
 		if (tile.distanceFromView === 0) this.tileBitmapList.unshift(tile);
