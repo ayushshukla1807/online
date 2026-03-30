@@ -227,7 +227,7 @@ class ViewLayoutCompareChanges extends ViewLayoutNewBase {
 
 		const anchorWidth = this.getDocumentAnchorSection().size[0];
 		// Two pages side by side, with a gap in-between.
-		const contentWidth = 2 * app.activeDocument.fileSize.pX + this.viewGap;
+		const contentWidth = 2 * app.activeDocument.fileSize.pX + 2 * this.viewGap;
 		return anchorWidth - contentWidth;
 	}
 
