@@ -71,22 +71,18 @@ class ShortcutsUtil {
 		let shortcut = this.shortcutMap.get(command);
 		if (!shortcut) return text;
 
-		// localize shortcut
-		if (
-			String.locale.startsWith('de') ||
-			String.locale.startsWith('dsb') ||
-			String.locale.startsWith('hsb')
-		) {
-			shortcut = shortcut.replace('Ctrl', 'Strg');
-		}
-		if (String.locale.startsWith('lt')) {
-			shortcut = shortcut.replace('Ctrl', 'Vald');
-		}
-		if (String.locale.startsWith('sl')) {
-			shortcut = shortcut
-				.replace('Ctrl', 'Krmilka')
-				.replace('Alt', 'izmenjalka')
-				.replace('Shift', 'dvigalka');
+		// Localize modifier names for the current UI language.
+		// unoShortcutsModifierL10N is generated from core's
+		// vcl/unx/generic/app/keysymnames.cxx by scripts/unoshortcuts.py.
+		for (const [lang, replacements] of Object.entries(
+			unoShortcutsModifierL10N,
+		)) {
+			if (String.locale.startsWith(lang)) {
+				for (const [eng, loc] of Object.entries(replacements)) {
+					shortcut = shortcut.replace(eng, loc as string);
+				}
+				break;
+			}
 		}
 
 		var newText =

@@ -268,6 +268,69 @@ def pickCanonicalShortcut(candidates):
     return ranked[0][0]
 
 
+# X11 keysyms for modifier keys, used to parse keysymnames.cxx.
+MODIFIER_KEYSYMS = {
+    'XK_Control_L': 'Ctrl',
+    'XK_Control_R': 'Ctrl',
+    'XK_Shift_L': 'Shift',
+    'XK_Shift_R': 'Shift',
+    'XK_Alt_L': 'Alt',
+}
+
+
+def extractModifierL10N(corePath):
+    """Extract localized modifier key names from keysymnames.cxx.
+
+    Returns a dict mapping language code to a dict of
+    {EnglishModifier: LocalizedName} for modifiers that differ from English.
+    """
+    cxxPath = os.path.join(
+        corePath, 'vcl/unx/generic/app/keysymnames.cxx')
+    if not os.path.isfile(cxxPath):
+        return {}
+
+    with open(cxxPath, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # Parse the aKeyboards[] array to find language -> array name mapping.
+    langArrays = {}
+    for m in re.finditer(
+            r'\{\s*"(\w+)"\s*,\s*aImplReplacements_(\w+)', content):
+        langArrays[m.group(2)] = m.group(1)
+
+    result = {}
+    for arrayName, langCode in langArrays.items():
+        pattern = (r'aImplReplacements_%s\[\]\s*=\s*\{([^;]+)\};'
+                   % re.escape(arrayName))
+        m = re.search(pattern, content, re.DOTALL)
+        if not m:
+            continue
+
+        body = m.group(1)
+        replacements = {}
+        for entry in re.finditer(
+                r'\{\s*(\w+)\s*,\s*"([^"]+)"\s*\}', body):
+            keysym = entry.group(1)
+            localName = entry.group(2)
+            # Decode UTF-8 octal escapes (e.g., \303\272 -> UTF-8 bytes).
+            localName = re.sub(
+                r'\\(\d{3})',
+                lambda m2: chr(int(m2.group(1), 8)),
+                localName)
+            # Re-encode as proper UTF-8.
+            localName = localName.encode('latin-1').decode('utf-8')
+
+            if keysym in MODIFIER_KEYSYMS:
+                engName = MODIFIER_KEYSYMS[keysym]
+                if localName != engName:
+                    replacements[engName] = localName
+
+        if replacements:
+            result[langCode] = replacements
+
+    return result
+
+
 def applyEquivalentGroups(shortcuts):
     """Propagate shortcuts within equivalent command groups."""
     for group in EQUIVALENT_GROUPS:
@@ -286,7 +349,9 @@ def applyEquivalentGroups(shortcuts):
 def generateShortcuts(onlinePath, corePath):
     """Extract online commands and their shortcuts from core.
 
-    Returns a dict mapping .uno: commands to shortcut display strings.
+    Returns (shortcuts, modifierL10N) where shortcuts maps .uno: commands
+    to shortcut display strings and modifierL10N maps language codes to
+    modifier name replacement dicts.
     """
     xcuPath = os.path.join(
         corePath,
@@ -314,19 +379,31 @@ def generateShortcuts(onlinePath, corePath):
     # Propagate within equivalent groups.
     applyEquivalentGroups(shortcuts)
 
-    return shortcuts
+    modifierL10N = extractModifierL10N(corePath)
+
+    return shortcuts, modifierL10N
 
 
-def writeUnoshortcutsJS(onlinePath, shortcuts):
+def writeUnoshortcutsJS(onlinePath, shortcuts, modifierL10N):
     """Write the generated unoshortcuts.js file."""
     outPath = os.path.join(onlinePath, 'browser/src/unoshortcuts.js')
     with open(outPath, 'w', encoding='utf-8') as f:
         f.write("// Don't modify, generated using scripts/unoshortcuts.py\n\n")
         f.write("var unoShortcutsMap = {\n")
-
         for cmd in sorted(shortcuts.keys()):
             f.write("\t'%s': '%s',\n" % (cmd, shortcuts[cmd]))
+        f.write("};\n\n")
 
+        # Localized modifier key names, extracted from
+        # vcl/unx/generic/app/keysymnames.cxx in core.
+        f.write("var unoShortcutsModifierL10N = {\n")
+        for lang in sorted(modifierL10N.keys()):
+            parts = []
+            for eng in ('Ctrl', 'Shift', 'Alt'):
+                if eng in modifierL10N[lang]:
+                    parts.append("'%s': '%s'" % (eng, modifierL10N[lang][eng]))
+            if parts:
+                f.write("\t'%s': {%s},\n" % (lang, ', '.join(parts)))
         f.write("};\n")
 
 
@@ -372,11 +449,12 @@ if __name__ == "__main__":
                 % sys.argv[3])
             exit(1)
 
-        shortcuts = generateShortcuts(onlineDir, coreDir)
+        shortcuts, modifierL10N = generateShortcuts(onlineDir, coreDir)
 
-        writeUnoshortcutsJS(onlineDir, shortcuts)
+        writeUnoshortcutsJS(onlineDir, shortcuts, modifierL10N)
         sys.stderr.write("Updated browser/src/unoshortcuts.js "
-                         "(%d shortcuts)\n" % len(shortcuts))
+                         "(%d shortcuts, %d modifier l10n languages)\n"
+                         % (len(shortcuts), len(modifierL10N)))
 
     else:
         usageAndExit()
